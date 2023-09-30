@@ -6,8 +6,8 @@
 #define BYTEFROST_DISCOVERYSERVER_H
 
 #ifdef _WIN32
-#include <winsock2.h>
 #include <Ws2tcpip.h>
+#include <winsock2.h>
 #else
 #include <arpa/inet.h>
 #include <netinet/in.h>
@@ -15,10 +15,9 @@
 #include <unistd.h>
 #endif
 
-#include <iostream>
-
 #include <atomic>
 #include <cstdint>
+#include <iostream>
 #include <string>
 #include <string_view>
 #include <thread>

@@ -35,9 +35,7 @@ DiscoveryServer::DiscoveryServer(std::string username)
   }
 }
 
-DiscoveryServer::~DiscoveryServer() {
-    stop();
-}
+DiscoveryServer::~DiscoveryServer() { stop(); }
 
 void DiscoveryServer::start() {
   _workThread = std::thread(&DiscoveryServer::discoveryJob, this);
@@ -45,28 +43,45 @@ void DiscoveryServer::start() {
 }
 
 void DiscoveryServer::stop() {
-    _running = false;
-    _workThread.join();
+  _running = false;
+  _workThread.join();
 
-    SOCK_CLOSE(_inSock);
-    SOCK_CLOSE(_outSock);
+  SOCK_CLOSE(_inSock);
+  SOCK_CLOSE(_outSock);
 }
 
 void DiscoveryServer::discoveryJob() {
-    while(_running) {
-        std::cerr << "Broadcasting " << _broadcastMessage << std::endl;
+  while (_running) {
+    std::cerr << "Broadcasting " << _broadcastMessage << std::endl;
 
-        sendto(_outSock, _broadcastMessage.data(), _broadcastMessage.size(), 0,
-               (sockaddr*)&_outAddr, sizeof(_outAddr));
-        int n = SOCK_READ(_inSock, _inBuf, sizeof(_inBuf));
+    int n = sendto(_outSock, _broadcastMessage.data(), _broadcastMessage.size(),
+                   0, (sockaddr*)&_outAddr, sizeof(_outAddr));
 
-        if (n > 0) {
-            std::cerr << "I discovered someone!: '" << std::string(_inBuf, n) << "'"
-                      << std::endl;
-        }
-
-        std::this_thread::sleep_for(std::chrono::seconds(1));
+    if (n < 0) {
+#ifdef _WIN32
+      int error = WSAGetLastError();
+#else
+      int error = n;
+#endif
+      std::cerr << "Error sending multicast: " << error << std::endl;
     }
+
+    n = SOCK_READ(_inSock, _inBuf, sizeof(_inBuf));
+
+    if (n < 0) {
+#ifdef _WIN32
+      int error = WSAGetLastError();
+#else
+      int error = n;
+#endif
+      std::cerr << "Error reading multicast socket: " << error << std::endl;
+    } else if (n > 0) {
+      std::cerr << "I discovered someone!: '" << std::string(_inBuf, n) << "'"
+                << std::endl;
+    }
+
+    std::this_thread::sleep_for(std::chrono::seconds(1));
+  }
 }
 
 }  // namespace ByteFrost::internal

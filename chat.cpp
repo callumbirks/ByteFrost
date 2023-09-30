@@ -5,12 +5,12 @@
 #include "library.h"
 
 void receiveMessage(std::string message) {
-    std::cerr << "Received message '" << message << "'" << std::endl;
+  std::cerr << "Received message '" << message << "'" << std::endl;
 }
 
-int main() {
-    ByteFrost::Server server { 4269, &receiveMessage };
-    server.start();
+using namespace ByteFrost::internal;
 
-    return 0;
+int main() {
+  DiscoveryServer ds{"Steve's PC"};
+  return 0;
 }

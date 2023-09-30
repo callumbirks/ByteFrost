@@ -1,10 +1,11 @@
 #ifndef BYTEFROST_LIBRARY_H
 #define BYTEFROST_LIBRARY_H
 
-#include "Server.h"
+#include "DiscoveryServer.h"
+#include "MessageServer.h"
 
 namespace ByteFrost {
-    void hello();
+void hello();
 }
 
-#endif //BYTEFROST_LIBRARY_H
+#endif  // BYTEFROST_LIBRARY_H

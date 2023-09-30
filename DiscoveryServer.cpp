@@ -4,10 +4,6 @@
 
 #include "DiscoveryServer.h"
 
-#include <Ws2tcpip.h>
-
-#include <iostream>
-
 namespace ByteFrost::internal {
 DiscoveryServer::DiscoveryServer(std::string username)
     : _inBuf{},

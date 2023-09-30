@@ -17,6 +17,7 @@
 
 #include <iostream>
 
+#include <atomic>
 #include <cstdint>
 #include <string>
 #include <string_view>
@@ -28,8 +29,13 @@ namespace ByteFrost::internal {
 class DiscoveryServer {
  public:
   DiscoveryServer(std::string username);
+  ~DiscoveryServer();
 
   void start();
+
+  void wait() { _workThread.join(); }
+
+  void stop();
 
  private:
   std::thread _workThread;
@@ -39,6 +45,7 @@ class DiscoveryServer {
   SOCK_T _inSock;
   std::string _broadcastMessage;
   char _inBuf[256];
+  std::atomic<bool> _running;
 
   void discoveryJob();
 

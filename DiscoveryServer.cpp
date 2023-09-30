@@ -35,23 +35,38 @@ DiscoveryServer::DiscoveryServer(std::string username)
   }
 }
 
+DiscoveryServer::~DiscoveryServer() {
+    stop();
+}
+
 void DiscoveryServer::start() {
   _workThread = std::thread(&DiscoveryServer::discoveryJob, this);
+  _running = true;
+}
+
+void DiscoveryServer::stop() {
+    _running = false;
+    _workThread.join();
+
+    SOCK_CLOSE(_inSock);
+    SOCK_CLOSE(_outSock);
 }
 
 void DiscoveryServer::discoveryJob() {
-  std::cerr << "Broadcasting " << _broadcastMessage << std::endl;
+    while(_running) {
+        std::cerr << "Broadcasting " << _broadcastMessage << std::endl;
 
-  sendto(_outSock, _broadcastMessage.data(), _broadcastMessage.size(), 0,
-         (sockaddr*)&_outAddr, sizeof(_outAddr));
-  int n = SOCK_READ(_inSock, _inBuf, sizeof(_inBuf));
+        sendto(_outSock, _broadcastMessage.data(), _broadcastMessage.size(), 0,
+               (sockaddr*)&_outAddr, sizeof(_outAddr));
+        int n = SOCK_READ(_inSock, _inBuf, sizeof(_inBuf));
 
-  if (n > 0) {
-    std::cerr << "I discovered someone!: '" << std::string(_inBuf, n) << "'"
-              << std::endl;
-  }
+        if (n > 0) {
+            std::cerr << "I discovered someone!: '" << std::string(_inBuf, n) << "'"
+                      << std::endl;
+        }
 
-  std::this_thread::sleep_for(std::chrono::seconds(1));
+        std::this_thread::sleep_for(std::chrono::seconds(1));
+    }
 }
 
 }  // namespace ByteFrost::internal

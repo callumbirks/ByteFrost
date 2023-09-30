@@ -12,5 +12,8 @@ using namespace ByteFrost::internal;
 
 int main() {
   DiscoveryServer ds{"Steve's PC"};
+  ds.start();
+  ds.wait();
+
   return 0;
 }

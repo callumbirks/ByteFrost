@@ -21,6 +21,16 @@ DiscoveryServer::DiscoveryServer(std::string username, const DiscoveryCallback& 
           0,
 #endif
           AF_INET, htons(kMulticastPort)} {
+
+#ifdef _WIN32
+  WSADATA wsaData;
+  int iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
+  if (iResult != 0) {
+    std::cerr << "WSAStartup failed: " << iResult << std::endl;
+    exit(1);
+  }
+#endif
+
   _outSock = socket(AF_INET, SOCK_DGRAM, 0);
   inet_pton(AF_INET, kMulticastAddress, &_outAddr.sin_addr);
 

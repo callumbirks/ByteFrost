@@ -120,10 +120,15 @@ bool MessageServer::sendMessage(const std::string &peerUsername, const std::stri
 
 void MessageServer::listenForMessages() {
   while (_listening) {
-    int numSockEvents = SOCK_POLL(_peersArray, _connectedPeers.size(), -1);
+    // Timeout of 1000 so thread is not blocked
+    int numSockEvents = SOCK_POLL(_peersArray, _connectedPeers.size(), 1000);
+
+    if (numSockEvents == 0) continue;
 
     if (numSockEvents == -1) {
       // Get error from WSALastErr and errno
+      std::cerr << "Error while polling peer sockets" << std::endl;
+      continue;
     }
 
     std::vector<std::string> droppedPeers{};

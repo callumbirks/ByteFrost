@@ -4,7 +4,7 @@
 
 #include "Client.h"
 
-void messageReceived(std::string message) {}
+void messageReceived(std::string message) { std::cerr << "I received a message: " << message << std::endl; }
 
 ByteFrost::Client::Client(std::string username)
     : _username(std::move(username)),

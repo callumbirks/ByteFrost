@@ -4,6 +4,8 @@
 
 #include "MessageServer.h"
 
+#include <cstring>
+
 namespace ByteFrost::internal {
 MessageServer::MessageServer(const MessageServer::MessageCallback& callback)
 

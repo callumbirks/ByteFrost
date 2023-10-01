@@ -3,7 +3,7 @@ project(ByteFrost)
 
 set(CMAKE_CXX_STANDARD 17)
 
-add_library(ByteFrost library.cpp
+add_library(ByteFrost
         MessageServer.cpp
         Client.cpp
         DiscoveryServer.cpp

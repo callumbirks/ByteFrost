@@ -2,7 +2,7 @@
 // Created by Callum Birks on 30/09/2023.
 //
 
-#include "library.h"
+#include "ByteFrost.h"
 
 int main() {
   ByteFrost::Client client{"Steve's PC"};

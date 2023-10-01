@@ -6,14 +6,14 @@
 
 void messageReceived(std::string message) { std::cerr << "I received a message!: " << message << std::endl; }
 
-ByteFrost::Client::Client(std::string username, uint16_t port)
+ByteFrost::Client::Client(std::string username)
     : _username(std::move(username)),
       _discoveryServer(_username,
                        [this](auto&& username_, auto&& ipAddress_) {
                          discoveredPeer(std::forward<decltype(username_)>(username_),
                                         std::forward<decltype(ipAddress_)>(ipAddress_));
                        }),
-      _messageServer(port, &messageReceived) {
+      _messageServer(&messageReceived) {
 #ifdef _WIN32
   WSADATA wsaData;
   int iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);

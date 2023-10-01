@@ -5,7 +5,7 @@
 #include "library.h"
 
 int main() {
-  ByteFrost::Client client{"Jeff's Mac", 4269};
+  ByteFrost::Client client{"Steve's PC"};
 
   std::this_thread::sleep_for(std::chrono::seconds(5));
 

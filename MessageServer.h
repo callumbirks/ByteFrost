@@ -34,7 +34,7 @@ class MessageServer {
  public:
   typedef std::function<void(std::string)> MessageCallback;
 
-  MessageServer(uint16_t port_number, const MessageCallback &callback);
+  MessageServer(const MessageCallback &callback);
 
   ~MessageServer();
 

@@ -16,7 +16,7 @@ class Client {
   friend internal::DiscoveryServer;
 
  public:
-  Client(std::string username, uint16_t port);
+  Client(std::string username);
 
   bool sendMessage(const std::string& username, const std::string& message);
 

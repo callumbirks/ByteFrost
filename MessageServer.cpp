@@ -5,14 +5,14 @@
 #include "MessageServer.h"
 
 namespace ByteFrost::internal {
-MessageServer::MessageServer(uint16_t port_number, const MessageServer::MessageCallback& callback)
+MessageServer::MessageServer(const MessageServer::MessageCallback& callback)
 
             : _server_addr {
 #ifndef _WIN32
                             0,
 #endif
                             AF_INET,
-                            htons(port_number),
+                            htons(kMessagePort),
                             { INADDR_ANY },
                             { 0 } }
 
@@ -135,7 +135,7 @@ void MessageServer::listenForMessages() {
       int error = WSAGetLastError();
 #else
       // Need to fix this to use `errno`
-      int error = numSockEvents
+      int error = numSockEvents;
 #endif
       std::cerr << "Error while polling peer sockets: " << error << std::endl;
       continue;

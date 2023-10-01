@@ -23,6 +23,8 @@ int main() {
     if (!availablePeers.empty()) {
       std::string username{};
       do {
+        username = "";
+        std::cout << std::endl;
         std::cout << "Enter username to send message: ";
         std::cin >> username;
       } while (username.empty() || availablePeers.count(username) == 0);

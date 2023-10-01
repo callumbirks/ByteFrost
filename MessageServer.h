@@ -17,7 +17,9 @@
 #include <Ws2tcpip.h>
 #include <winsock2.h>
 #else
+#include <arpa/inet.h>
 #include <netinet/in.h>
+#include <sys/poll.h>
 #include <sys/socket.h>
 #endif
 #include <unistd.h>
@@ -47,20 +49,24 @@ class MessageServer {
   [[nodiscard]] bool sendMessage(const std::string &peerUsername, const std::string &message) const;
 
  private:
-  sockaddr_in _server_addr, _client_addr;
-  SOCK_T _sock1, _sock2;
+  sockaddr_in _server_addr;
+  SOCK_T _listeningSock;
   char _buffer[256];
-
+  std::string _myIP;
   std::shared_ptr<MessageCallback> _messageCallback;
   std::thread _listenerThread;
   std::atomic<bool> _listening = false;
   std::map<std::string, pollfd> _connectedPeers;
   // We can hold up to 32 connections at once
-
   pollfd _peersArray[32];
 
+  static constexpr uint16_t kMessagePort = 39635;
+
+  static std::string getMyIP();
   void listenForMessages();
   void updatePeersArray();
+  SOCK_T initiateConnection(const std::string &peerIP);
+  SOCK_T acceptConnection();
 };
 
 }  // namespace ByteFrost::internal

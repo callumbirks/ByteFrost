@@ -23,14 +23,7 @@ DiscoveryServer::DiscoveryServer(std::string username, const DiscoveryCallback& 
 #endif
           AF_INET, htons(kMulticastPort)} {
 
-#ifdef _WIN32
-  WSADATA wsaData;
-  int iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
-  if (iResult != 0) {
-    std::cerr << "WSAStartup failed: " << iResult << std::endl;
-    exit(1);
-  }
-#endif
+  WSA_STARTUP();
 
   _outSock = socket(AF_INET, SOCK_DGRAM, 0);
   inet_pton(AF_INET, kMulticastAddress, &_outAddr.sin_addr);
@@ -46,7 +39,10 @@ DiscoveryServer::DiscoveryServer(std::string username, const DiscoveryCallback& 
   }
 }
 
-DiscoveryServer::~DiscoveryServer() { stop(); }
+DiscoveryServer::~DiscoveryServer() {
+  stop();
+  WSA_CLEANUP();
+}
 
 void DiscoveryServer::start() {
   _running = true;
@@ -67,7 +63,7 @@ void DiscoveryServer::discoveryJob() {
   while (_running) {
     std::cerr << "Broadcasting " << _broadcastMessage << std::endl;
 
-    int n =
+    ssize_t n =
         sendto(_outSock, _broadcastMessage.data(), _broadcastMessage.size(), 0, (sockaddr*)&_outAddr, sizeof(_outAddr));
 
     if (n < 0) {
@@ -88,6 +84,8 @@ void DiscoveryServer::discoveryJob() {
 #ifdef _WIN32
       int error = WSAGetLastError();
 #else
+      // This is NOT how you get an error in Unix
+      // Need to read from `errno`
       int error = n;
 #endif
       std::cerr << "Error reading multicast socket: " << error << std::endl;

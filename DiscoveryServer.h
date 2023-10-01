@@ -36,8 +36,6 @@ class DiscoveryServer {
 
   void start();
 
-  void wait() { _workThread.join(); }
-
   void stop();
 
  private:
@@ -54,7 +52,7 @@ class DiscoveryServer {
   void discoveryJob();
 
   static constexpr const char* const kMulticastAddress = "239.255.73.5";
-  static constexpr uint16_t kMulticastPort = 6372;
+  static constexpr uint16_t kMulticastPort = 26372;
 };
 }  // namespace ByteFrost::internal
 

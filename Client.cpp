@@ -6,8 +6,6 @@
 
 void messageReceived(std::string message) { std::cerr << "I received a message!: " << message << std::endl; }
 
-void discovered(std::string, std::string);
-
 ByteFrost::Client::Client(std::string username, uint16_t port)
     : _username(std::move(username)),
       _discoveryServer(_username,
@@ -26,8 +24,13 @@ ByteFrost::Client::Client(std::string username, uint16_t port)
 #endif
 
   _discoveryServer.start();
-  //  _messageServer.start();
+  _messageServer.start();
 }
+
+bool ByteFrost::Client::sendMessage(const std::string& username, const std::string& message) {
+  return _messageServer.sendMessage(username, message);
+}
+
 void ByteFrost::Client::discoveredPeer(const std::string& username, const std::string& ipAddress) {
   // Ignore discovering self
   if (username == _username) return;
@@ -40,13 +43,12 @@ void ByteFrost::Client::discoveredPeer(const std::string& username, const std::s
   if (found_it == _availablePeers.end()) {
     Peer peer{username, ipAddress, lastSeen};
     _availablePeers.emplace(username, peer);
+    _messageServer.addPeer(username, ipAddress);
   } else {
     Peer& peer = found_it->second;
     peer.lastSeen = lastSeen;
-    // Get IP from senderAddr
     if (peer.ipAddress != ipAddress) {
       peer.ipAddress = ipAddress;
     }
-    // if(found_it->second.ipAddressBuf != senderAddr.IPADR) // update ip
   }
 }

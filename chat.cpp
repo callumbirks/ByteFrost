@@ -5,10 +5,15 @@
 #include "library.h"
 
 int main() {
-  ByteFrost::Client client{"Steve's PC", 4269};
+  ByteFrost::Client client{"Jeff's Mac", 4269};
 
-  while (true)
-    ;
+  std::this_thread::sleep_for(std::chrono::seconds(5));
+
+  auto availablePeers = client.availablePeers();
+
+  for (const auto& peer : availablePeers) {
+    client.sendMessage(peer.first, "Hi, this is Jeff's Mac");
+  }
 
   return 0;
 }

@@ -14,6 +14,17 @@
 #define SOCK_WRITE(sock, buf, len) send(sock, buf, len, 0)
 #define SOCK_POLL(fds, nfds, timeout) WSAPoll(fds, nfds, timeout)
 #define SOCK_CLOSE(sock) closesocket(sock)
+#define INVALID_SOCK INVALID_SOCKET
+#define WSA_STARTUP()                                             \
+  {                                                               \
+    WSADATA wsaData;                                              \
+    int iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);           \
+    if (iResult != 0) {                                           \
+      std::cerr << "WSAStartup failed: " << iResult << std::endl; \
+      exit(1);                                                    \
+    }                                                             \
+  }
+#define WSA_CLEANUP() WSACleanup();
 #else
 #define SOCK_T int32_t
 #define SOCK_ERR(sock) sock < 0
@@ -21,6 +32,9 @@
 #define SOCK_WRITE(sock, buf, len) write(sock, buf, len)
 #define SOCK_POLL(fds, nfds, timeout) poll(fds, nfds, timeout)
 #define SOCK_CLOSE(sock) close(sock)
+#define INVALID_SOCK -1
+#define WSA_STARTUP()
+#define WSA_CLEANUP()
 #endif
 
 #endif  // BYTEFROST_SOCK_UTILITY_H

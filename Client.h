@@ -13,9 +13,16 @@
 
 namespace ByteFrost {
 class Client {
+  friend internal::DiscoveryServer;
+
  public:
   Client(std::string username, uint16_t port);
 
+  bool sendMessage(const std::string& username, const std::string& message);
+
+  const std::unordered_map<std::string, Peer>& availablePeers() { return _availablePeers; }
+
+ protected:
   void discoveredPeer(const std::string& username, const std::string& ipAddress);
 
  private:

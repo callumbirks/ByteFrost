@@ -16,7 +16,10 @@ MessageServer::MessageServer(const MessageServer::MessageCallback& callback)
                             AF_INET,
                             htons(kMessagePort),
                             { INADDR_ANY },
-                            { 0 } }
+#ifndef __linux__
+                            { 0 }
+#endif
+      }
 
             , _buffer {}
             , _listeningSock {}

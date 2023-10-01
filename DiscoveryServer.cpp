@@ -10,6 +10,7 @@ DiscoveryServer::DiscoveryServer(std::string username, const DiscoveryCallback& 
       _broadcastMessage{std::move(username)},
       _inSock{},
       _outSock{},
+      _running(false),
       _callback(std::make_shared<DiscoveryCallback>(discoveryCallback)),
       _inAddr{
 #ifndef _WIN32
@@ -48,8 +49,8 @@ DiscoveryServer::DiscoveryServer(std::string username, const DiscoveryCallback& 
 DiscoveryServer::~DiscoveryServer() { stop(); }
 
 void DiscoveryServer::start() {
-  _workThread = std::thread(&DiscoveryServer::discoveryJob, this);
   _running = true;
+  _workThread = std::thread(&DiscoveryServer::discoveryJob, this);
 }
 
 void DiscoveryServer::stop() {

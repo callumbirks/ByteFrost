@@ -22,6 +22,8 @@
 #endif
 #include <unistd.h>
 
+#include <map>
+
 #include "sock_utility.h"
 
 namespace ByteFrost::internal {
@@ -38,25 +40,27 @@ class MessageServer {
 
   void stop();
 
-  [[nodiscard]] bool sendMessage(const std::string &message) const;
+  void addPeer(const std::string &username, const std::string &ipAddress);
 
-  enum class Status {
-    STOPPED,
-    STARTED,
-    CONNECTED,
-  };
+  void removePeer(const std::string &username);
+
+  [[nodiscard]] bool sendMessage(const std::string &peerUsername, const std::string &message) const;
 
  private:
   sockaddr_in _server_addr, _client_addr;
   SOCK_T _sock1, _sock2;
   char _buffer[256];
-  Status _status;
 
   std::shared_ptr<MessageCallback> _messageCallback;
   std::thread _listenerThread;
   std::atomic<bool> _listening = false;
+  std::map<std::string, pollfd> _connectedPeers;
+  // We can hold up to 32 connections at once
+
+  pollfd _peersArray[32];
 
   void listenForMessages();
+  void updatePeersArray();
 };
 
 }  // namespace ByteFrost::internal

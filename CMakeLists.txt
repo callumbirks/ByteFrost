@@ -5,12 +5,8 @@ set(CMAKE_CXX_STANDARD 17)
 
 add_library(ByteFrost library.cpp
         MessageServer.cpp
-        MessageServer.h
         Client.cpp
-        Client.h
         DiscoveryServer.cpp
-        DiscoveryServer.h
-        sock_utility.h
 )
 
 if (WIN32)

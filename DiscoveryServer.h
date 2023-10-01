@@ -17,7 +17,9 @@
 
 #include <atomic>
 #include <cstdint>
+#include <functional>
 #include <iostream>
+#include <memory>
 #include <string>
 #include <string_view>
 #include <thread>
@@ -27,7 +29,9 @@
 namespace ByteFrost::internal {
 class DiscoveryServer {
  public:
-  DiscoveryServer(std::string username);
+  typedef std::function<void(const std::string&, const std::string&)> DiscoveryCallback;
+
+  DiscoveryServer(std::string username, const DiscoveryCallback& discoveryCallback);
   ~DiscoveryServer();
 
   void start();
@@ -45,6 +49,7 @@ class DiscoveryServer {
   std::string _broadcastMessage;
   char _inBuf[256];
   std::atomic<bool> _running;
+  std::shared_ptr<DiscoveryCallback> _callback;
 
   void discoveryJob();
 

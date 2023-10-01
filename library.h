@@ -1,6 +1,7 @@
 #ifndef BYTEFROST_LIBRARY_H
 #define BYTEFROST_LIBRARY_H
 
+#include "Client.h"
 #include "DiscoveryServer.h"
 #include "MessageServer.h"
 

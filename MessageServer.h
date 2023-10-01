@@ -58,6 +58,7 @@ class MessageServer {
   std::thread _listenerThread;
   std::atomic<bool> _listening = false;
   std::map<std::string, pollfd> _connectedPeers;
+  std::unordered_map<SOCK_T, std::string> _socketToPeernameMap;
   // We can hold up to 32 connections at once
   pollfd _peersArray[32];
   std::mutex _peersMutex;

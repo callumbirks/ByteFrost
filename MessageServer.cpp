@@ -19,6 +19,7 @@ MessageServer::MessageServer(const MessageServer::MessageCallback& callback)
             , _buffer {}
             , _listeningSock {}
             , _connectedPeers {}
+ , _socketToPeernameMap {}
             , _peersArray {}
             , _messageCallback(std::make_shared<MessageCallback>(callback)) {
   WSA_STARTUP();
@@ -145,9 +146,8 @@ void MessageServer::listenForMessages() {
     std::vector<std::string> droppedPeers{};
 
     // Figure out which sockets have messages, read them and invoke callbacks.
-    int eventsProcessed = 0;
-    for (auto &peer : _connectedPeers) {
-      pollfd &peerfd = peer.second;
+    for (int i = 0, eventsProcessed = 0; eventsProcessed < numSockEvents && i < _connectedPeers.size(); i++) {
+      const pollfd &peerfd = _peersArray[i];
       if (peerfd.revents == 0) {  // No event
         continue;
       } else if (peerfd.revents & POLLIN) {  // Socket has data to read
@@ -155,7 +155,7 @@ void MessageServer::listenForMessages() {
         (*_messageCallback)(std::string(_buffer, n));
         eventsProcessed++;
       } else if (peerfd.revents & POLLHUP) {  // Peer closed connection
-        droppedPeers.emplace_back(peer.first);
+        droppedPeers.emplace_back(_socketToPeernameMap[peerfd.fd]);
         eventsProcessed++;
       } else {  // Socket doesn't have data to read, must be error because we are only polling for `POLLIN`
         std::cerr << "An error occurred polling a connected peer socket." << std::endl;
@@ -180,6 +180,7 @@ void MessageServer::addPeer(const std::string &username, const std::string &ipAd
 
   pollfd peer{peerSock, POLLIN, 0};
   _connectedPeers.emplace(username, peer);
+  _socketToPeernameMap.emplace(peerSock, username);
   updatePeersArray();
 }
 
@@ -188,7 +189,9 @@ void MessageServer::removePeer(const std::string &username) {
 
   if (it == _connectedPeers.end()) return;
 
-  SOCK_CLOSE(it->second.fd);
+  SOCK_T peerSock = it->second.fd;
+  _socketToPeernameMap.erase(peerSock);
+  SOCK_CLOSE(peerSock);
   _connectedPeers.erase(username);
   updatePeersArray();
 }

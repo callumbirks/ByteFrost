@@ -12,10 +12,10 @@ int main() {
   auto availablePeers = client.availablePeers();
 
   for (const auto& peer : availablePeers) {
-    client.sendMessage(peer.first, "Hi, this is Jeff's Mac");
+    client.sendMessage(peer.first, "Hi, this is Steve's PC");
   }
 
-  std::this_thread::sleep_for(std::chrono::seconds(1));
+  std::this_thread::sleep_for(std::chrono::seconds(20));
 
   return 0;
 }

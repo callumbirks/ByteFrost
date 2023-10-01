@@ -31,7 +31,8 @@ int main() {
 
       std::string message{};
       std::cout << "Enter message: ";
-      std::cin >> message;
+
+      std::getline(std::cin, message);
 
       client.sendMessage(username, message);
     }

@@ -26,7 +26,7 @@ int main() {
         username = "";
         std::cout << std::endl;
         std::cout << "Enter username to send message: ";
-        std::cin >> username;
+        std::getline(std::cin, username);
       } while (username.empty() || availablePeers.count(username) == 0);
 
       std::string message{};

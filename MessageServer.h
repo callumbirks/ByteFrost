@@ -25,6 +25,7 @@
 #include <unistd.h>
 
 #include <map>
+#include <mutex>
 
 #include "sock_utility.h"
 
@@ -59,6 +60,7 @@ class MessageServer {
   std::map<std::string, pollfd> _connectedPeers;
   // We can hold up to 32 connections at once
   pollfd _peersArray[32];
+  std::mutex _peersMutex;
 
   static constexpr uint16_t kMessagePort = 39635;
 

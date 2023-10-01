@@ -120,10 +120,11 @@ bool MessageServer::sendMessage(const std::string &peerUsername, const std::stri
 
 void MessageServer::listenForMessages() {
   while (_listening) {
-    if (_connectedPeers.empty()) {
+    if (_connectedPeers.empty() || _peersArray[0].fd == 0) {
       std::this_thread::sleep_for(std::chrono::milliseconds(100));
       continue;
     }
+
     // Timeout of 1000 so thread is not blocked
     int numSockEvents = SOCK_POLL(_peersArray, _connectedPeers.size(), 1000);
 
@@ -179,6 +180,7 @@ void MessageServer::addPeer(const std::string &username, const std::string &ipAd
 
   pollfd peer{peerSock, POLLIN, 0};
   _connectedPeers.emplace(username, peer);
+  updatePeersArray();
 }
 
 void MessageServer::removePeer(const std::string &username) {

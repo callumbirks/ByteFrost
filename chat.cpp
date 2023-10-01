@@ -15,5 +15,7 @@ int main() {
     client.sendMessage(peer.first, "Hi, this is Jeff's Mac");
   }
 
+  std::this_thread::sleep_for(std::chrono::seconds(1));
+
   return 0;
 }

@@ -120,6 +120,10 @@ bool MessageServer::sendMessage(const std::string &peerUsername, const std::stri
 
 void MessageServer::listenForMessages() {
   while (_listening) {
+    if (_connectedPeers.empty()) {
+      std::this_thread::sleep_for(std::chrono::milliseconds(100));
+      continue;
+    }
     // Timeout of 1000 so thread is not blocked
     int numSockEvents = SOCK_POLL(_peersArray, _connectedPeers.size(), 1000);
 
@@ -127,7 +131,13 @@ void MessageServer::listenForMessages() {
 
     if (numSockEvents == -1) {
       // Get error from WSALastErr and errno
-      std::cerr << "Error while polling peer sockets" << std::endl;
+#ifdef _WIN32
+      int error = WSAGetLastError();
+#else
+      // Need to fix this to use `errno`
+      int error = numSockEvents
+#endif
+      std::cerr << "Error while polling peer sockets: " << error << std::endl;
       continue;
     }
 

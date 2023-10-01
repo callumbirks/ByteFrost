@@ -148,7 +148,11 @@ void MessageServer::listenForMessages() {
         continue;
       } else if (peerfd.revents & POLLIN) {  // Socket has data to read
         int n = SOCK_READ(peerfd.fd, _buffer, 255);
-        (*_messageCallback)(std::string(_buffer, n));
+        if (n < 0) {  // Peer dropped connection
+          droppedPeers.emplace_back(_socketToPeernameMap[peerfd.fd]);
+        } else if (n > 0) {
+          (*_messageCallback)(std::string(_buffer, n));
+        }
         eventsProcessed++;
       } else if (peerfd.revents & POLLHUP) {  // Peer closed connection
         droppedPeers.emplace_back(_socketToPeernameMap[peerfd.fd]);

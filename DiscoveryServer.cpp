@@ -61,8 +61,6 @@ void DiscoveryServer::stop() {
 
 void DiscoveryServer::discoveryJob() {
   while (_running) {
-    std::cerr << "Broadcasting " << _broadcastMessage << std::endl;
-
     ssize_t n =
         sendto(_outSock, _broadcastMessage.data(), _broadcastMessage.size(), 0, (sockaddr*)&_outAddr, sizeof(_outAddr));
 

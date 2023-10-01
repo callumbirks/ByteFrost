@@ -20,7 +20,7 @@ class Client {
 
   bool sendMessage(const std::string& username, const std::string& message);
 
-  const std::unordered_map<std::string, Peer>& availablePeers() { return _availablePeers; }
+  std::unordered_map<std::string, Peer>& availablePeers() { return _availablePeers; }
 
  protected:
   void discoveredPeer(const std::string& username, const std::string& ipAddress);

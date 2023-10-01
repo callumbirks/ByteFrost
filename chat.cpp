@@ -7,15 +7,28 @@
 int main() {
   ByteFrost::Client client{"Steve's PC"};
 
-  std::this_thread::sleep_for(std::chrono::seconds(5));
+  auto& availablePeers = client.availablePeers();
 
-  auto availablePeers = client.availablePeers();
+  while (true) {
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    availablePeers = client.availablePeers();
+    std::cout << "Available peers:\n";
+    for (const auto& peer : availablePeers) {
+      std::cout << peer.first << " - " << peer.second.ipAddress << "\n";
+    }
+    if (!availablePeers.empty()) {
+      std::string username{};
+      do {
+        std::cout << std::endl;
+        std::cout << "Enter username to send message: ";
+        std::cin >> username;
+      } while (username.empty() || availablePeers.count(username) == 0);
 
-  for (const auto& peer : availablePeers) {
-    client.sendMessage(peer.first, "Hi, this is Steve's PC");
+      std::string message{};
+      std::cout << "Enter message: ";
+      std::cin >> message;
+
+      client.sendMessage(username, message);
+    }
   }
-
-  std::this_thread::sleep_for(std::chrono::seconds(20));
-
-  return 0;
 }

@@ -4,7 +4,7 @@
 
 #include "Client.h"
 
-void messageReceived(std::string message) { std::cerr << "I received a message!: " << message << std::endl; }
+void messageReceived(std::string message) {}
 
 ByteFrost::Client::Client(std::string username)
     : _username(std::move(username)),
@@ -36,8 +36,6 @@ void ByteFrost::Client::discoveredPeer(const std::string& username, const std::s
   if (username == _username) return;
 
   auto lastSeen = std::chrono::steady_clock::now();
-
-  std::cerr << "Discovered peer '" << username << "', with IP " << ipAddress << std::endl;
 
   auto found_it = _availablePeers.find(username);
   if (found_it == _availablePeers.end()) {

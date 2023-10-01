@@ -92,8 +92,6 @@ std::string MessageServer::getMyIP() {
 
   inet_ntop(AF_INET, &localAddr.sin_addr, addressBuf, sizeof(addressBuf));
 
-  std::cerr << "My IP is " << addressBuf << std::endl;
-
   SOCK_CLOSE(sock);
 
   return {addressBuf};
@@ -112,8 +110,6 @@ bool MessageServer::sendMessage(const std::string &peerUsername, const std::stri
 
   if (n < 0) {
     std::cerr << "Error sending message" << std::endl;
-  } else {
-    std::cerr << "Message sent successfully" << std::endl;
   }
 
   return n >= 0;

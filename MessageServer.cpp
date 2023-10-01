@@ -56,7 +56,9 @@ void MessageServer::stop() {
   _status = Status::STOPPED;
 
   _listening = false;
-  _listenerThread.join();
+  if (_listenerThread.joinable()) {
+    _listenerThread.join();
+  }
 
   SOCK_CLOSE(_sock2);
   SOCK_CLOSE(_sock1);

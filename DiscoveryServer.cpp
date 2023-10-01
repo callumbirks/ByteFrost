@@ -44,7 +44,9 @@ void DiscoveryServer::start() {
 
 void DiscoveryServer::stop() {
   _running = false;
-  _workThread.join();
+  if (_workThread.joinable()) {
+    _workThread.join();
+  }
 
   SOCK_CLOSE(_inSock);
   SOCK_CLOSE(_outSock);

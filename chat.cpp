@@ -7,5 +7,8 @@
 int main() {
   ByteFrost::Client client{"Steve's PC", 4269};
 
+  while (true)
+    ;
+
   return 0;
 }

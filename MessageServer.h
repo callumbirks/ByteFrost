@@ -14,8 +14,10 @@
 #include <string>
 #include <thread>
 #ifdef _WIN32
+#include <BaseTsd.h>
 #include <Ws2tcpip.h>
 #include <winsock2.h>
+typedef SSIZE_T ssize_t;
 #else
 #include <arpa/inet.h>
 #include <netinet/in.h>

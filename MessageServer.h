@@ -21,11 +21,13 @@
 #include <netinet/in.h>
 #include <sys/poll.h>
 #include <sys/socket.h>
-#endif
 #include <unistd.h>
+#endif
 
 #include <map>
 #include <mutex>
+#include <unordered_map>
+#include <vector>
 
 #include "sock_utility.h"
 

@@ -25,6 +25,8 @@
     }                                                             \
   }
 #define WSA_CLEANUP() WSACleanup();
+#include <BaseTsd.h>
+typedef SSIZE_T ssize_t;
 #else
 #define SOCK_T int32_t
 #define SOCK_ERR(sock) sock < 0
